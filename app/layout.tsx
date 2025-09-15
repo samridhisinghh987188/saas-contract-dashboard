@@ -12,7 +12,6 @@ import { Toaster } from "@/components/ui/toaster"
 export const metadata: Metadata = {
   title: "ContractFlow - SaaS Contracts Dashboard",
   description: "Professional contract management platform",
-  generator: "v0.app",
 }
 
 export default function RootLayout({

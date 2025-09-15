@@ -12,12 +12,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { LogOut, User, Loader2 } from "lucide-react"
+import { LogOut, User, Loader2, Bell } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { Badge } from "@/components/ui/badge"
 
 export function DashboardHeader() {
   const { user, logout } = useAuth()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
 
   const handleLogout = async () => {
@@ -29,6 +31,7 @@ export function DashboardHeader() {
       console.error("Error during logout:", error)
     } finally {
       setIsLoggingOut(false)
+      setIsDropdownOpen(false)
     }
   }
 
@@ -38,11 +41,15 @@ export function DashboardHeader() {
         <div className="flex-1" />
 
         <div className="flex items-center space-x-4">
-          <DropdownMenu>
+          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button 
+                variant="ghost" 
+                className="relative h-10 w-10 rounded-full hover:bg-accent"
+                aria-label="User menu"
+              >
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback className="bg-primary text-primary-foreground">
+                  <AvatarFallback className="bg-primary text-primary-foreground font-medium">
                     {user?.username?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
@@ -56,20 +63,31 @@ export function DashboardHeader() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem 
+                className="cursor-pointer hover:bg-accent"
+                onClick={() => router.push('/dashboard/settings')}
+              >
                 <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                <span>Profile & Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className="cursor-pointer hover:bg-accent"
+                onClick={() => router.push('/dashboard/settings/notifications')}
+              >
+                <Bell className="mr-2 h-4 w-4" />
+                <span>Notifications</span>
+                <Badge variant="outline" className="ml-auto">3</Badge>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem 
-                onClick={handleLogout}
+                className="cursor-pointer text-destructive hover:bg-destructive/10 focus:text-destructive"
+                onClick={handleLogout} 
                 disabled={isLoggingOut}
-                className="text-destructive focus:text-destructive"
               >
                 {isLoggingOut ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span>Logging out...</span>
+                    Signing out...
                   </>
                 ) : (
                   <>

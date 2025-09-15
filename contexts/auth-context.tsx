@@ -47,7 +47,23 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
   }, [])
 
   const login = useCallback(async (username: string) => {
-    const mockToken = `mock-jwt-${Date.now()}`
+    // Create a more realistic JWT-like token with header, payload, and signature
+    const header = {
+      alg: 'HS256',
+      typ: 'JWT'
+    };
+    
+    const payload = {
+      sub: username,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7), // 7 days expiry
+      role: 'user'
+    };
+    
+    // Mock JWT (not cryptographically secure, just for demo)
+    const base64Header = btoa(JSON.stringify(header));
+    const base64Payload = btoa(JSON.stringify(payload));
+    const mockToken = `${base64Header}.${base64Payload}.mockSignature`;
     const userData = { username, token: mockToken }
 
     localStorage.setItem("auth-token", mockToken)

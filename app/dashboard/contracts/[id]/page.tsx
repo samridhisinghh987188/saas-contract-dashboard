@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { useContractDetail } from "@/hooks/use-contract-detail"
@@ -8,7 +9,21 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { EvidenceDrawer } from "@/components/evidence-drawer"
-import { ArrowLeft, Calendar, Users, AlertTriangle, CheckCircle, XCircle, Loader2 } from "lucide-react"
+import { 
+  ArrowLeft, 
+  Calendar, 
+  Users, 
+  AlertTriangle, 
+  CheckCircle, 
+  XCircle, 
+  Loader2, 
+  FileText, 
+  AlertCircle,
+  Lightbulb,
+  ChevronRight
+} from "lucide-react"
+import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 export default function ContractDetailPage() {
   const params = useParams()

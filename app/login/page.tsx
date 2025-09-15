@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { Loader2 } from "lucide-react"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -15,20 +16,36 @@ export default function LoginPage() {
   const { login } = useAuth()
   const router = useRouter()
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
     
+    // Basic validation
+    if (!username.trim() || !password) {
+      setError("Please enter both username and password")
+      return
+    }
+
+    // Password validation
+    if (password !== "test123") {
+      setError("Invalid password. Please use 'test123' as the password")
+      return
+    }
+
+    setIsLoading(true)
+    
     try {
-      // Simple mock authentication
-      if (username && password === "test123") {
-        await login(username)
-        router.push("/dashboard")
-      } else {
-        setError("Invalid credentials. Use any username with password 'test123'")
-      }
+      await login(username)
+      // Add a small delay to show loading state
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      router.push("/dashboard")
     } catch (err) {
-      setError("An error occurred during login")
+      console.error("Login error:", err)
+      setError("An error occurred during login. Please try again.")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -75,8 +92,15 @@ export default function LoginPage() {
                 Use any username with password: test123
               </p>
             </div>
-            <Button type="submit" className="w-full">
-              Sign In
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign In'
+              )}
             </Button>
           </form>
         </CardContent>
